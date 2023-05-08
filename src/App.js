@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
+import Day from './components/day/day';
 
 function App() {
   const [ data, setData ] = useState(undefined)
@@ -18,15 +19,21 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("request")
-    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relativehumidity_2m,rain,showers,snowfall,snow_depth,weathercode,surface_pressure,cloudcover,visibility,windspeed_10m,winddirection_10m,soil_temperature_0cm`)
+    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,precipitation,snowfall,snow_depth,weathercode,surface_pressure,cloudcover,visibility,windspeed_10m,winddirection_10m,soil_temperature_0cm`)
       .then(response => {
         setData(response.data)
+        console.log(response.data)
     })
   }, [lat, lon])
   return (
     <div className="App">
-      { JSON.stringify(data) }
+      <Day dayNum="0" data={data}/>
+      <Day dayNum="1" data={data}/>
+      <Day dayNum="2" data={data}/>
+      <Day dayNum="3" data={data}/>
+      <Day dayNum="4" data={data}/>
+      <Day dayNum="5" data={data}/>
+      <Day dayNum="6" data={data}/>
     </div>
   );
 }
