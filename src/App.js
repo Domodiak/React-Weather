@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+  const [ data, setData ] = useState(undefined)
+  const [ lat, setLat ] = useState(40.730610)
+  const [ lon, setLon ] = useState(-73.935242)
+
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      var _lat = pos.coords.latitude
+      var _lon = pos.coords.longitude
+      
+      setLat(Math.round(_lat * (10 ** 2)) / (10 ** 2))
+      setLon(Math.round(_lon * (10 ** 2)) / (10 ** 2))
+    })
+  }
+
+  useEffect(() => {
+    console.log("request")
+    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relativehumidity_2m,rain,showers,snowfall,snow_depth,weathercode,surface_pressure,cloudcover,visibility,windspeed_10m,winddirection_10m,soil_temperature_0cm`)
+      .then(response => {
+        setData(response.data)
+    })
+  }, [lat, lon])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      { JSON.stringify(data) }
     </div>
   );
 }
